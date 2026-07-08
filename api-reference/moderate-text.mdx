@@ -1,0 +1,67 @@
+---
+title: "Moderate Text"
+description: "Classify text content for harmful material"
+---
+
+## Endpoint
+## Request
+
+```bash
+curl -X POST https://api.shield-api.com/v1/moderate \
+  -H "Authorization: Bearer shld_..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "your content here",
+    "platform_type": "social",
+    "user_tier": "new",
+    "thread_context": ""
+  }'
+```
+
+## Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| text | string | Yes | The text to moderate |
+| platform_type | string | No | `news`, `social`, `gaming`, `adult`, `marketplace` |
+| user_tier | string | No | `new`, `verified`, `trusted` |
+| thread_context | string | No | Previous messages for context |
+
+## Response
+
+```json
+{
+  "request_id": "4fa1705ea02a64a09548bf3257ee3f94",
+  "decision": "block",
+  "confidence": 0.91,
+  "category": "toxic",
+  "reasoning": "ml model detected toxic content"
+}
+```
+
+## Response fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| request_id | string | Unique ID — use for appeals |
+| decision | string | `allow` or `block` |
+| confidence | float | 0.0 to 1.0 |
+| category | string | `toxic`, `spam`, `none` |
+| reasoning | string | Why this decision was made |
+
+## Context engine
+
+Shield adjusts decisions based on context signals:
+
+```python
+# Same text, different decisions based on context
+result = client.moderate_text(
+    "attack on downtown",
+    platform_type="news"    # allowed — reporting context
+)
+
+result = client.moderate_text(
+    "attack on downtown",
+    user_tier="new"         # stricter — new user
+)
+```
