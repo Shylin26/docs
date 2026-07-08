@@ -1,0 +1,74 @@
+---
+title: "Python SDK"
+description: "Install and use the Shield Python SDK"
+---
+
+## Install
+
+```bash
+pip install shield-moderation
+```
+
+## Initialize
+
+```python
+from shield_moderation import ShieldClient
+
+client = ShieldClient("shld_...")
+```
+
+## Moderate text
+
+```python
+result = client.moderate_text("your content here")
+
+print(result["decision"])     # "allow" or "block"
+print(result["confidence"])   # 0.0 to 1.0
+print(result["category"])     # "toxic", "spam", etc
+print(result["request_id"])   # use for appeals
+```
+
+## With context
+
+```python
+result = client.moderate_text(
+    "breaking news: attack downtown",
+    platform_type="news",
+    user_tier="trusted",
+    thread_context="previous messages here"
+)
+```
+
+## Moderate image
+
+```python
+result = client.moderate_image("https://example.com/image.jpg")
+```
+
+## Moderate audio
+
+```python
+result = client.moderate_audio("https://example.com/audio.mp3")
+```
+
+## Moderate video
+
+```python
+result = client.moderate_video("https://example.com/video.mp4")
+```
+
+## Analytics
+
+```python
+stats = client.get_analytics()
+print(f"Total: {stats['total']}, Blocked: {stats['blocked']}")
+```
+
+## Submit appeal
+
+```python
+client.submit_appeal(
+    request_id="4fa1705ea02a64a09548bf3257ee3f94",
+    reason="This was a movie quote"
+)
+```

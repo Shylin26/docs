@@ -1,0 +1,66 @@
+---
+title: "Node.js SDK"
+description: "Install and use the Shield Node.js SDK"
+---
+
+## Install
+
+```bash
+npm install shield-moderation
+```
+
+## Initialize
+
+```javascript
+const { ShieldClient } = require('shield-moderation')
+
+const client = new ShieldClient('shld_...')
+```
+
+## Moderate text
+
+```javascript
+const result = await client.moderateText('your content here')
+
+console.log(result.decision)    // "allow" or "block"
+console.log(result.confidence)  // 0.0 to 1.0
+console.log(result.category)    // "toxic", "spam", etc
+console.log(result.request_id)  // use for appeals
+```
+
+## With context
+
+```javascript
+const result = await client.moderateText(
+  'breaking news: attack downtown',
+  {
+    platformType: 'news',
+    userTier: 'trusted'
+  }
+)
+```
+
+## Moderate image
+
+```javascript
+const result = await client.moderateImage('https://example.com/image.jpg')
+```
+
+## Moderate audio
+
+```javascript
+const result = await client.moderateAudio('https://example.com/audio.mp3')
+```
+
+## Moderate video
+
+```javascript
+const result = await client.moderateVideo('https://example.com/video.mp4')
+```
+
+## Analytics
+
+```javascript
+const stats = await client.getAnalytics()
+console.log(`Total: ${stats.total}, Blocked: ${stats.blocked}`)
+```

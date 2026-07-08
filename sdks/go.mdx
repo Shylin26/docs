@@ -1,0 +1,53 @@
+---
+title: "Go SDK"
+description: "Install and use the Shield Go SDK"
+---
+
+## Install
+
+```bash
+go get github.com/shield-api/shield-go
+```
+
+## Initialize
+
+```go
+import shield "github.com/shield-api/shield-go"
+
+client := shield.NewClient("shld_...")
+```
+
+## Moderate text
+
+```go
+result, err := client.ModerateText("your content here", nil)
+if err != nil {
+    log.Fatal(err)
+}
+
+fmt.Println(result.Decision)    // "allow" or "block"
+fmt.Println(result.Confidence)  // 0.0 to 1.0
+fmt.Println(result.Category)    // "toxic", "spam", etc
+```
+
+## With context
+
+```go
+result, err := client.ModerateText("breaking news: attack downtown", &shield.ModerationOptions{
+    PlatformType: "news",
+    UserTier:     "trusted",
+})
+```
+
+## Moderate image
+
+```go
+result, err := client.ModerateImage("https://example.com/image.jpg")
+```
+
+## Analytics
+
+```go
+stats, err := client.GetAnalytics()
+fmt.Printf("Total: %d, Blocked: %d\n", stats.Total, stats.Blocked)
+```
