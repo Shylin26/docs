@@ -1,47 +1,109 @@
 ---
 title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+description: "Moderate your first piece of content in 5 minutes"
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
+## Get an API key
 
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
+Generate your API key by calling the keys endpoint:
 
-## Prerequisites
+```bash
+curl -X POST https://api.shield-api.com/v1/keys \
+  -H "Content-Type: application/json" \
+  -d '{"customer_id":"your-company","name":"production","tier":"starter"}'
+```
 
-Before you begin, you must have:
+Response:
+```json
+{
+  "key": "shld_..."
+}
+```
 
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
+Save this key — you won't see it again.
 
-## Get started
+## Moderate text
 
-<Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
+```bash
+curl -X POST https://api.shield-api.com/v1/moderate \
+  -H "Authorization: Bearer shld_..." \
+  -H "Content-Type: application/json" \
+  -d '{"text":"your content here"}'
+```
 
-    ```bash
-    npm install your-package
-    ```
-  </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
+Response:
+```json
+{
+  "request_id": "4fa1705ea02a64a09548bf3257ee3f94",
+  "decision": "block",
+  "confidence": 0.91,
+  "category": "toxic",
+  "reasoning": "ml model detected toxic content"
+}
+```
 
-    ```bash
-    your-cli init
-    ```
-  </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
+## Use the Python SDK
 
-    ```bash
-    your-cli start
-    ```
-  </Step>
-</Steps>
+```bash
+pip install shield-moderation
+```
 
-<Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
+```python
+from shield_moderation import ShieldClient
 
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
-</Tip>
+client = ShieldClient("shld_...")
+
+result = client.moderate_text("your content here")
+
+if result["decision"] == "block":
+    print(f"Blocked: {result['category']} ({result['confidence']:.0%} confident)")
+else:
+    print("Content is safe")
+```
+
+## Use the Node.js SDK
+
+```bash
+npm install shield-moderation
+```
+
+```javascript
+const { ShieldClient } = require('shield-moderation')
+
+const client = new ShieldClient('shld_...')
+
+const result = await client.moderateText('your content here')
+
+if (result.decision === 'block') {
+  console.log(`Blocked: ${result.category}`)
+}
+```
+
+## Use context signals
+
+Shield can adjust decisions based on platform context:
+
+```python
+result = client.moderate_text(
+    "breaking news: violent attack downtown",
+    platform_type="news",    # news sites get more lenient treatment
+    user_tier="trusted"      # verified users get more lenient treatment
+)
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Moderate images" icon="image" href="/api-reference/moderate-image">
+    Send image URLs for visual content moderation
+  </Card>
+  <Card title="Set up webhooks" icon="webhook" href="/api-reference/webhooks">
+    Get notified when moderation completes
+  </Card>
+  <Card title="View analytics" icon="chart-bar" href="/api-reference/analytics">
+    Track your moderation stats
+  </Card>
+  <Card title="Appeal decisions" icon="flag" href="/api-reference/appeals">
+    Dispute incorrect moderation decisions
+  </Card>
+</CardGroup>
