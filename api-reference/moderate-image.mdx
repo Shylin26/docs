@@ -1,0 +1,38 @@
+---
+title: "Moderate Image"
+description: "Classify images for harmful visual content"
+---
+
+## Endpoint
+## Request
+
+```bash
+curl -X POST https://api.shield-api.com/v1/moderate/image \
+  -H "Authorization: Bearer shld_..." \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://example.com/image.jpg"}'
+```
+
+## Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| url | string | Yes | Publicly accessible image URL |
+
+## Response
+
+```json
+{
+  "decision": "allow",
+  "confidence": 0.49,
+  "category": "safe content",
+  "reasoning": "image classified as safe content"
+}
+```
+
+## Categories
+
+- `safe content` — no harmful content detected
+- `violent content` — graphic violence or gore
+- `adult content` — NSFW imagery
+- `hate symbols` — hate speech symbols or imagery
