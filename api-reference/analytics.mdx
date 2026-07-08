@@ -1,0 +1,32 @@
+---
+title: "Analytics"
+description: "Get moderation stats for your account"
+---
+
+## Endpoint
+## Request
+
+```bash
+curl https://api.shield-api.com/v1/analytics \
+  -H "Authorization: Bearer shld_..."
+```
+
+## Response
+
+```json
+{
+  "total": 1250,
+  "blocked": 342,
+  "allowed": 908,
+  "top_category": "toxic"
+}
+```
+
+## Response fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| total | int | Total moderation requests |
+| blocked | int | Number of blocked requests |
+| allowed | int | Number of allowed requests |
+| top_category | string | Most detected harmful category |

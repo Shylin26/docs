@@ -1,0 +1,60 @@
+---
+title: "Webhooks"
+description: "Get notified when moderation decisions are made"
+---
+
+## Register a webhook
+
+```
+POST /v1/webhooks
+```
+
+```bash
+curl -X POST https://api.shield-api.com/v1/webhooks \
+  -H "Authorization: Bearer shld_..." \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://your-site.com/webhook"}'
+```
+
+## Response
+
+```json
+{
+  "status": "webhook registered",
+  "secret": "ef04d166367e36588f15be2b403db727"
+}
+```
+
+Save the secret — use it to verify webhook payloads.
+
+## Webhook payload
+
+Shield sends a POST request to your URL after every moderation decision:
+
+```json
+{
+  "request_id": "4fa1705ea02a64a09548bf3257ee3f94",
+  "decision": "block",
+  "confidence": 0.91,
+  "category": "toxic",
+  "reasoning": "ml model detected toxic content",
+  "timestamp": "2026-07-04T21:06:29Z"
+}
+```
+
+## Verify signatures
+
+Every webhook includes an `X-Shield-Signature` header. Verify it to ensure the request came from Shield:
+
+```python
+import hmac
+import hashlib
+
+def verify_webhook(payload: bytes, signature: str, secret: str) -> bool:
+    expected = hmac.new(
+        secret.encode(),
+        payload,
+        hashlib.sha256
+    ).hexdigest()
+    return hmac.compare_digest(expected, signature)
+```

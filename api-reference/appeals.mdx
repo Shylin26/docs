@@ -1,0 +1,34 @@
+---
+title: "Appeals"
+description: "Dispute incorrect moderation decisions"
+---
+
+## Endpoint
+## Request
+
+```bash
+curl -X POST https://api.shield-api.com/v1/appeal \
+  -H "Authorization: Bearer shld_..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "request_id": "4fa1705ea02a64a09548bf3257ee3f94",
+    "reason": "This was a movie quote, not a real threat"
+  }'
+```
+
+## Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| request_id | string | Yes | The request ID from the moderation response |
+| reason | string | Yes | Why you think the decision was wrong |
+
+## Response
+
+```json
+{
+  "status": "appeal submitted"
+}
+```
+
+Appeals are reviewed within 24 hours. Approved appeals are added to the training dataset to improve future accuracy.
